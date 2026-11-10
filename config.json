@@ -6,5 +6,11 @@
     "z": 29.19,
     "heading": 197.61
   },
-  "autoSaveIntervalMs": 30000
+  "autoSaveIntervalMs": 30000,
+  "skyDrop": {
+    "enabled": true,
+    "loadingScreenResource": "cfx-swr-loadingscreen",
+    "skyHoldMs": 1500,
+    "collisionTimeoutMs": 15000
+  }
 }

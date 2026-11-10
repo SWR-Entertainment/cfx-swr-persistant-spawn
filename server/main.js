@@ -14,6 +14,10 @@ let SQL;
 let db;
 let dbReady = false;
 
+// Players who have landed at their real spot. Until then the ped is wherever
+// spawnmanager parked it during loading, so no position from them is saved.
+const spawnedPlayers = new Set();
+
 function getPrimaryIdentifier(playerId) {
     let ids = [];
 
@@ -145,6 +149,7 @@ async function initDatabase() {
 
 onNet('persistentspawn:server:requestSpawn', () => {
     const sourcePlayer = global.source;
+    spawnedPlayers.delete(String(sourcePlayer));
 
     if (!dbReady) {
         emitNet('persistentspawn:client:applySpawn', sourcePlayer, config.defaultSpawn);
@@ -171,10 +176,14 @@ onNet('persistentspawn:server:requestSpawn', () => {
     emitNet('persistentspawn:client:applySpawn', sourcePlayer, config.defaultSpawn);
 });
 
+onNet('persistentspawn:server:spawnComplete', () => {
+    spawnedPlayers.add(String(global.source));
+});
+
 onNet('persistentspawn:server:saveSpawn', (spawn) => {
     const sourcePlayer = global.source;
 
-    if (!dbReady || !spawn) {
+    if (!dbReady || !spawn || !spawnedPlayers.has(String(sourcePlayer))) {
         return;
     }
 
@@ -218,8 +227,9 @@ RegisterCommand('setspawn', (sourcePlayer) => {
 
 on('playerDropped', () => {
     const sourcePlayer = global.source;
+    const wasSpawned = spawnedPlayers.delete(String(sourcePlayer));
 
-    if (!dbReady) {
+    if (!dbReady || !wasSpawned) {
         return;
     }
 
