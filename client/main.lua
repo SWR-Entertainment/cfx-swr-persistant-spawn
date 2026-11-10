@@ -5,6 +5,10 @@ local dropConfig = config.skyDrop or {}
 local LOADSCREEN_RESOURCE = dropConfig.loadingScreenResource or 'cfx-swr-loadingscreen'
 local SKY_HOLD_MS = dropConfig.skyHoldMs or 1500
 local COLLISION_TIMEOUT = dropConfig.collisionTimeoutMs or 15000
+-- Switch flags for the ascent. 16384 = SWITCH_FLAG_SUPPRESS_INTRO_FX: the ascent
+-- happens behind the loading screen, so its whooshes/flashes would otherwise be
+-- heard through it. The descent (SwitchInPlayer) keeps all of its effects.
+local SWITCH_OUT_FLAGS = dropConfig.switchOutFlags or 16384
 -- How long we'll wait on the server before letting the loading screen go anyway.
 local SERVER_REPLY_TIMEOUT = 15000
 
@@ -131,7 +135,7 @@ local function skyDrop(spawn)
     end
 
     loadscreenProgress(0.85, 'Getting ready to drop in...')
-    SwitchOutPlayer(PlayerPedId(), 0, 1)
+    SwitchOutPlayer(PlayerPedId(), SWITCH_OUT_FLAGS, 1)
 
     local inSky = waitFor(function()
         return GetPlayerSwitchState() == SWITCH_STATE_SKY_HOLD

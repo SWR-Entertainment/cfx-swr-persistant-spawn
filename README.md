@@ -45,6 +45,7 @@ Edit `config.json`:
 - `skyDrop.enabled`: GTA Online style drop-in from the sky on join. `false` = plain fade teleport.
 - `skyDrop.loadingScreenResource`: Loading screen resource to hand off with (default `cfx-swr-loadingscreen`).
 - `skyDrop.skyHoldMs`: How long the sky camera holds before the drop starts.
+- `skyDrop.switchOutFlags`: Flags for the hidden ascent. `16384` suppresses its whoosh/flash so it can't be heard through the loading screen; `0` = stock.
 - `skyDrop.collisionTimeoutMs`: Max wait for the world to stream in at the spawn before dropping anyway.
 
 ## Sky drop / loading screen handoff
